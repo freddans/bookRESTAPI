@@ -26,6 +26,9 @@ public class Flight {
     @Column(name = "price")
     private double price;
 
+    @Column(name = "booked")
+    boolean isBooked;
+
     public Flight() {
     }
 
@@ -41,6 +44,7 @@ public class Flight {
         this.arrival = arrival;
         this.airline = airline;
         this.price = price;
+        this.isBooked = true;
     }
 
     public long getId() {
@@ -97,5 +101,13 @@ public class Flight {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public boolean isBooked() {
+        return isBooked;
+    }
+
+    public void setBooked(boolean booked) {
+        isBooked = booked;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.bookbook.controller;
 
 import com.example.bookbook.entities.Booking;
+import com.example.bookbook.entities.Transportation;
 import com.example.bookbook.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,5 +29,20 @@ public class BookingController {
                           @RequestParam("hotelId") long hotelId,
                           @RequestParam("transportationId") long transportationId) {
         return bookingService.create(flightId, hotelId, transportationId);
+    }
+
+    @GetMapping("/{id}")
+    public Booking findBookingById(@PathVariable long id) {
+        return bookingService.findBookingById(id);
+    }
+
+    @PutMapping("/update/{id}")
+    public Booking updateBooking(@PathVariable long id, @RequestParam("flightId") long flightId, @RequestParam("hotelId") long hotelId, @RequestParam("transportationId") long transportationId) {
+        return bookingService.updateBooking(id, flightId, hotelId, transportationId);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteBooking(@PathVariable long id) {
+        return bookingService.deleteBooking(id);
     }
 }

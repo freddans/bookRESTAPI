@@ -13,6 +13,8 @@ public class Transportation {
     private String type;
     @Column(name = "price")
     private double price;
+    @Column(name = "booked")
+    private boolean isBooked;
 
     public Transportation() {
     }
@@ -20,6 +22,7 @@ public class Transportation {
     public Transportation(String type, double price) {
         this.type = type;
         this.price = price;
+        this.isBooked = true;
     }
 
     public long getId() {
@@ -44,5 +47,13 @@ public class Transportation {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public boolean isBooked() {
+        return isBooked;
+    }
+
+    public void setBooked(boolean booked) {
+        isBooked = booked;
     }
 }

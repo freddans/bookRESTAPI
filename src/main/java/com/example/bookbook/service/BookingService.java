@@ -18,16 +18,16 @@ import java.util.Optional;
 public class BookingService {
 
     private BookingRepository bookingRepository;
-    private FlightRepository flightRepository;
-    private HotelRepository hotelRepository;
-    private TransportationRepository transportationRepository;
+    private FlightService flightService;
+    private HotelService hotelService;
+    private TransportationService transportationService;
 
     @Autowired
-    public BookingService(BookingRepository bookingRepository, FlightRepository flightRepository, HotelRepository hotelRepository, TransportationRepository transportationRepository) {
+    public BookingService(BookingRepository bookingRepository, FlightService flightService, HotelService hotelService, TransportationService transportationService) {
         this.bookingRepository = bookingRepository;
-        this.flightRepository = flightRepository;
-        this.hotelRepository = hotelRepository;
-        this.transportationRepository = transportationRepository;
+        this.flightService = flightService;
+        this.hotelService = hotelService;
+        this.transportationService = transportationService;
     }
 
     public List<Booking> getAllBookings() {
@@ -35,15 +35,11 @@ public class BookingService {
     }
 
     public Booking create(long flightId, long hotelId, long transportationId) {
-        Optional<Flight> optionalFlight = flightRepository.findById(flightId);
-        Optional<Hotel> optionalHotel = hotelRepository.findById(hotelId);
-        Optional<Transportation> optionalTransportation = transportationRepository.findById(transportationId);
+        Flight flight = flightService.findFlightById(flightId);
+        Hotel hotel = hotelService.findHotelById(hotelId);
+        Transportation transportation = transportationService.findTransportationById(transportationId);
 
-        if (optionalFlight.isPresent() && optionalHotel.isPresent() && optionalTransportation.isPresent()) {
-            Flight flight = optionalFlight.get();
-            Hotel hotel = optionalHotel.get();
-            Transportation transportation = optionalTransportation.get();
-
+        if (flight != null && hotel != null && transportation != null) {
             System.out.println("total price: " + (flight.getPrice() + hotel.getPrice() + transportation.getPrice()));
 
             Booking newBooking = new Booking(flight, hotel, transportation);
@@ -55,5 +51,68 @@ public class BookingService {
 
             return null;
         }
+    }
+
+    public Booking findBookingById(long id) {
+        Optional<Booking> optionalBooking = bookingRepository.findById(id);
+
+        if (optionalBooking.isPresent()) {
+            Booking booking = optionalBooking.get();
+
+            return booking;
+        } else {
+
+            return null;
+        }
+    }
+
+    public Booking updateBooking(long id, long flightId, long hotelId, long transportationId) {
+        Booking existingBooking = findBookingById(id);
+
+        if (existingBooking != null) {
+
+            if (flightId != existingBooking.getFlight().getId() && flightId != 0) {
+
+                Flight newFlight = flightService.findFlightById(flightId);
+
+                existingBooking.setFlight(newFlight);
+            }
+            if (hotelId != existingBooking.getHotel().getId() && hotelId != 0) {
+
+                Hotel newHotel = hotelService.findHotelById(hotelId);
+
+                existingBooking.setHotel(newHotel);
+            }
+            if (transportationId != existingBooking.getTransportation().getId() && transportationId != 0) {
+
+                Transportation newTransportation = transportationService.findTransportationById(transportationId);
+
+                existingBooking.setTransportation(newTransportation);
+            }
+
+            bookingRepository.save(existingBooking);
+        }
+
+        return existingBooking;
+    }
+
+    public String deleteBooking(long id) {
+        Booking bookingToDelete = findBookingById(id);
+
+        if (bookingToDelete != null) {
+
+            Flight flight = bookingToDelete.getFlight();
+            flight.setBooked(false);
+
+            Hotel hotel = bookingToDelete.getHotel();
+            hotel.setBooked(false);
+
+            Transportation transportation = bookingToDelete.getTransportation();
+            transportation.setBooked(false);
+
+            bookingRepository.delete(bookingToDelete);
+        }
+
+        return "Deleted booking";
     }
 }

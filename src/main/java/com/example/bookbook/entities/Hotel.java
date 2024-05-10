@@ -21,6 +21,8 @@ public class Hotel {
     private int stars;
     @Column(name="price")
     private double price;
+    @Column(name = "booked")
+    private boolean isBooked;
 
     public Hotel() {
     }
@@ -32,6 +34,7 @@ public class Hotel {
         this.wifi = wifi;
         this.stars = stars;
         this.price = price;
+        this.isBooked = true;
     }
 
     public long getId() {
@@ -88,5 +91,13 @@ public class Hotel {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public boolean isBooked() {
+        return isBooked;
+    }
+
+    public void setBooked(boolean booked) {
+        isBooked = booked;
     }
 }
