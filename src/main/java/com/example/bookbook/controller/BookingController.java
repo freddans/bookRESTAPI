@@ -24,9 +24,9 @@ public class BookingController {
     }
 
     @PostMapping("/add")
-    public Booking create(@RequestParam("airlineId") long airplaneId,
+    public Booking create(@RequestParam("flightId") long flightId,
                           @RequestParam("hotelId") long hotelId,
                           @RequestParam("transportationId") long transportationId) {
-        return bookingService.create(airplaneId, hotelId, transportationId);
+        return bookingService.create(flightId, hotelId, transportationId);
     }
 }

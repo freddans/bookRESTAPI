@@ -1,10 +1,10 @@
 package com.example.bookbook.service;
 
-import com.example.bookbook.entities.Airline;
+import com.example.bookbook.entities.Flight;
 import com.example.bookbook.entities.Booking;
 import com.example.bookbook.entities.Hotel;
 import com.example.bookbook.entities.Transportation;
-import com.example.bookbook.repositories.AirlineRepository;
+import com.example.bookbook.repositories.FlightRepository;
 import com.example.bookbook.repositories.BookingRepository;
 import com.example.bookbook.repositories.HotelRepository;
 import com.example.bookbook.repositories.TransportationRepository;
@@ -18,14 +18,14 @@ import java.util.Optional;
 public class BookingService {
 
     private BookingRepository bookingRepository;
-    private AirlineRepository airlineRepository;
+    private FlightRepository flightRepository;
     private HotelRepository hotelRepository;
     private TransportationRepository transportationRepository;
 
     @Autowired
-    public BookingService(BookingRepository bookingRepository, AirlineRepository airlineRepository, HotelRepository hotelRepository, TransportationRepository transportationRepository) {
+    public BookingService(BookingRepository bookingRepository, FlightRepository flightRepository, HotelRepository hotelRepository, TransportationRepository transportationRepository) {
         this.bookingRepository = bookingRepository;
-        this.airlineRepository = airlineRepository;
+        this.flightRepository = flightRepository;
         this.hotelRepository = hotelRepository;
         this.transportationRepository = transportationRepository;
     }
@@ -34,19 +34,19 @@ public class BookingService {
         return bookingRepository.findAll();
     }
 
-    public Booking create(long airlineId, long hotelId, long transportationId) {
-        Optional<Airline> optionalAirline = airlineRepository.findById(airlineId);
+    public Booking create(long flightId, long hotelId, long transportationId) {
+        Optional<Flight> optionalFlight = flightRepository.findById(flightId);
         Optional<Hotel> optionalHotel = hotelRepository.findById(hotelId);
         Optional<Transportation> optionalTransportation = transportationRepository.findById(transportationId);
 
-        if (optionalAirline.isPresent() && optionalHotel.isPresent() && optionalTransportation.isPresent()) {
-            Airline airline = optionalAirline.get();
+        if (optionalFlight.isPresent() && optionalHotel.isPresent() && optionalTransportation.isPresent()) {
+            Flight flight = optionalFlight.get();
             Hotel hotel = optionalHotel.get();
             Transportation transportation = optionalTransportation.get();
 
-            System.out.println("total price: " + (airline.getPrice() + hotel.getPrice() + transportation.getPrice()));
+            System.out.println("total price: " + (flight.getPrice() + hotel.getPrice() + transportation.getPrice()));
 
-            Booking newBooking = new Booking(airline, hotel, transportation);
+            Booking newBooking = new Booking(flight, hotel, transportation);
 
             bookingRepository.save(newBooking);
 

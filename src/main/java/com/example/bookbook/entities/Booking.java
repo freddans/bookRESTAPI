@@ -10,8 +10,8 @@ public class Booking {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "airline_id")
-    private Airline airLine;
+    @JoinColumn(name = "flight_id")
+    private Flight flight;
 
     @ManyToOne
     @JoinColumn(name = "hotel_id")
@@ -24,8 +24,8 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(Airline airLine, Hotel hotel, Transportation transportation) {
-        this.airLine = airLine;
+    public Booking(Flight flight, Hotel hotel, Transportation transportation) {
+        this.flight = flight;
         this.hotel = hotel;
         this.transportation = transportation;
     }
@@ -38,12 +38,12 @@ public class Booking {
         this.id = id;
     }
 
-    public Airline getAirLine() {
-        return airLine;
+    public Flight getFlight() {
+        return flight;
     }
 
-    public void setAirLine(Airline airLine) {
-        this.airLine = airLine;
+    public void setFlight(Flight flight) {
+        this.flight = flight;
     }
 
     public Hotel getHotel() {
