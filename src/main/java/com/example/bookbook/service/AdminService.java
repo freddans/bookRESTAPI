@@ -1,8 +1,7 @@
 package com.example.bookbook.service;
 
-import com.example.bookbook.entities.Flight;
-import com.example.bookbook.entities.User;
-import com.example.bookbook.repositories.AdminRepository;
+import com.example.bookbook.user.User;
+import com.example.bookbook.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,20 +11,20 @@ import java.util.Optional;
 @Service
 public class AdminService {
 
-    private AdminRepository adminRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public AdminService(AdminRepository adminRepository) {
-        this.adminRepository = adminRepository;
+    public AdminService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public List<User> getAllUsers() {
-        return adminRepository.findAll();
+        return userRepository.findAll();
     }
 
     public User createUser(User user) {
 
-        User userAlreadyExist = adminRepository.findUserByEmail(user.getEmail());
+        User userAlreadyExist = userRepository.findUserByEmail(user.getEmail());
 
         if (userAlreadyExist != null) {
 
@@ -34,14 +33,14 @@ public class AdminService {
 
             User newUser = new User(user.getName(), user.getBirthday(), user.getAddress(), user.getPhone(), user.getEmail());
 
-            adminRepository.save(newUser);
+            userRepository.save(newUser);
 
             return newUser;
         }
     }
 
     public User findUserById(long id) {
-        Optional<User> optionalUser = adminRepository.findById(id);
+        Optional<User> optionalUser = userRepository.findById(id);
 
         if (!optionalUser.isPresent()) {
 
@@ -54,7 +53,7 @@ public class AdminService {
     }
 
     public User updateUser(long id, User newUserInformation) {
-        Optional<User> optionalUser = adminRepository.findById(id);
+        Optional<User> optionalUser = userRepository.findById(id);
 
         if (optionalUser.isPresent()) {
             User existingUser = optionalUser.get();
@@ -87,7 +86,7 @@ public class AdminService {
                 existingUser.setActiveBookings(false);
             }
 
-            adminRepository.save(existingUser);
+            userRepository.save(existingUser);
 
             return existingUser;
         } else {
@@ -103,7 +102,7 @@ public class AdminService {
 
             if (!userToDelete.hasActiveBookings()) {
 
-                adminRepository.delete(userToDelete);
+                userRepository.delete(userToDelete);
             } else {
 
                 return "User has active bookings and cant be deleted";

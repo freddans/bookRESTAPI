@@ -1,4 +1,4 @@
-package com.example.bookbook.entities;
+package com.example.bookbook.user;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.GeneratorType;

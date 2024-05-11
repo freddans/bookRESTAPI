@@ -1,6 +1,6 @@
 package com.example.bookbook.controller;
 
-import com.example.bookbook.entities.User;
+import com.example.bookbook.user.User;
 import com.example.bookbook.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
