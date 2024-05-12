@@ -23,12 +23,12 @@ VALUES ('VIP Taxi', 1100, true),
        ('Bus', 65, true);
 
 -- Orders
-INSERT INTO orders (flight_id, hotel_id, transportation_id)
-VALUES (1, 1, 1),
-       (2, 2, 2),
-       (3, 3, 3),
-       (4, 4, 4),
-       (5, 5, 5);
+INSERT INTO orders (flight_id, hotel_id, transportation_id, bookingdate)
+VALUES (1, 1, 1, NOW()),
+       (2, 2, 2, NOW()),
+       (3, 3, 3, NOW()),
+       (4, 4, 4, NOW()),
+       (5, 5, 5, NOW());
 
 -- Users
 INSERT INTO users (name, birthday, address, phone, email, hasbookings)

@@ -2,6 +2,9 @@ package com.example.bookbook.entities;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 @Entity
 @Table(name = "orders")
 public class Booking {
@@ -21,6 +24,9 @@ public class Booking {
     @JoinColumn(name = "transportation_id")
     private Transportation transportation;
 
+    @Column(name = "bookingdate")
+    private Date bookingDate;
+
     public Booking() {
     }
 
@@ -28,6 +34,7 @@ public class Booking {
         this.flight = flight;
         this.hotel = hotel;
         this.transportation = transportation;
+        this.bookingDate = new Date();
     }
 
     public long getId() {
@@ -60,5 +67,13 @@ public class Booking {
 
     public void setTransportation(Transportation transportation) {
         this.transportation = transportation;
+    }
+
+    public Date getBookingDate() {
+        return bookingDate;
+    }
+
+    public void setBookingDate(Date bookingDate) {
+        this.bookingDate = bookingDate;
     }
 }
