@@ -110,4 +110,12 @@ public class User {
     public void setBookingList(List<Booking> bookingList) {
         this.bookingList = bookingList;
     }
+
+    public void addBooking(Booking booking) {
+        bookingList.add(booking);
+    }
+
+    public void removeBooking(Booking booking) {
+        bookingList.remove(booking);
+    }
 }

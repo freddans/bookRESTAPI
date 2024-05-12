@@ -5,9 +5,7 @@ import com.example.bookbook.entities.Flight;
 import com.example.bookbook.entities.Hotel;
 import com.example.bookbook.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,5 +33,15 @@ public class UserController {
     @GetMapping("/availablehotels")
     public List<Hotel> allAvailableHotels() {
         return userService.getAllAvailableHotels();
+    }
+
+    @PostMapping("/addtouserid/{id}")
+    public String create(@PathVariable long id, @RequestParam("bookingId") long bookingId) {
+        return userService.create(id, bookingId);
+    }
+
+    @PutMapping("/cancelorderforuserid/{id}")
+    public String cancel(@PathVariable long id, @RequestParam("bookingId") long bookingId) {
+        return userService.cancel(id, bookingId);
     }
 }
