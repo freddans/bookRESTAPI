@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -131,6 +130,18 @@ public class UserService {
         } else {
 
             return "user Id provided does not exist";
+        }
+    }
+
+    public List<Booking> getMyOrders(long id) {
+        User user = adminService.findUserById(id);
+
+        if (user != null) {
+
+            return user.getBookingList();
+        } else {
+
+            return null;
         }
     }
 }

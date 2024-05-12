@@ -44,4 +44,9 @@ public class UserController {
     public String cancel(@PathVariable long id, @RequestParam("bookingId") long bookingId) {
         return userService.cancel(id, bookingId);
     }
+
+    @GetMapping("/myorders/{id}")
+    public List<Booking> myOrders(@PathVariable long id) {
+        return userService.getMyOrders(id);
+    }
 }
