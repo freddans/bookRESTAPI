@@ -20,7 +20,7 @@ public class FlightController {
 
     @GetMapping("/all")
     public List<Flight> allFlights() {
-        return flightService.getAllAirLines();
+        return flightService.getAllFlights();
     }
 
     @PostMapping("/add")

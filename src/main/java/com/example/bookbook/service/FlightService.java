@@ -19,7 +19,7 @@ public class FlightService {
         this.flightRepository = flightRepository;
     }
 
-    public List<Flight> getAllAirLines() {
+    public List<Flight> getAllFlights() {
         return flightRepository.findAll();
     }
 

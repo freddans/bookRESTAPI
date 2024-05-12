@@ -24,6 +24,9 @@ public class Hotel {
     @Column(name = "booked")
     private boolean isBooked;
 
+    @Column(name = "rooms")
+    private int availableRooms = 20;
+
     public Hotel() {
     }
 
@@ -99,5 +102,13 @@ public class Hotel {
 
     public void setBooked(boolean booked) {
         isBooked = booked;
+    }
+
+    public int getAvailableRooms() {
+        return availableRooms;
+    }
+
+    public void setAvailableRooms(int availableRooms) {
+        this.availableRooms = availableRooms;
     }
 }

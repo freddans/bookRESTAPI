@@ -4,10 +4,7 @@ import com.example.bookbook.entities.Flight;
 import com.example.bookbook.entities.Booking;
 import com.example.bookbook.entities.Hotel;
 import com.example.bookbook.entities.Transportation;
-import com.example.bookbook.repositories.FlightRepository;
 import com.example.bookbook.repositories.BookingRepository;
-import com.example.bookbook.repositories.HotelRepository;
-import com.example.bookbook.repositories.TransportationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,13 +37,31 @@ public class BookingService {
         Transportation transportation = transportationService.findTransportationById(transportationId);
 
         if (flight != null && hotel != null && transportation != null) {
-            System.out.println("total price: " + (flight.getPrice() + hotel.getPrice() + transportation.getPrice()));
 
-            Booking newBooking = new Booking(flight, hotel, transportation);
+            if (flight.getAvailableSeats() != 0) {
 
-            bookingRepository.save(newBooking);
+                if (hotel.getAvailableRooms() != 0) {
 
-            return newBooking;
+                    System.out.println("total price: " + (flight.getPrice() + hotel.getPrice() + transportation.getPrice()));
+
+                    Booking newBooking = new Booking(flight, hotel, transportation);
+
+                    flight.setAvailableSeats(flight.getAvailableSeats() -1);
+                    hotel.setAvailableRooms(hotel.getAvailableRooms() -1);
+
+                    bookingRepository.save(newBooking);
+
+                    return newBooking;
+                }
+
+                // No hotel rooms available
+                return null;
+            } else {
+
+                // No seats available
+                return null;
+            }
+
         } else {
 
             return null;

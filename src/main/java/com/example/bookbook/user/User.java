@@ -1,7 +1,10 @@
 package com.example.bookbook.user;
 
+import com.example.bookbook.entities.Booking;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GeneratorType;
+
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -11,12 +14,21 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "name")
     private String name;
+    @Column(name = "birthday")
     private String birthday;
+    @Column(name = "address")
     private String address;
+    @Column(name = "phone")
     private String phone;
+    @Column(name = "email")
     private String email;
+    @Column(name = "hasbookings")
     private boolean activeBookings;
+
+    @ManyToMany
+    List<Booking> bookingList;
 
 
     public User() {
@@ -85,5 +97,17 @@ public class User {
 
     public void setActiveBookings(boolean activeBookings) {
         this.activeBookings = activeBookings;
+    }
+
+    public boolean isActiveBookings() {
+        return activeBookings;
+    }
+
+    public List<Booking> getBookingList() {
+        return bookingList;
+    }
+
+    public void setBookingList(List<Booking> bookingList) {
+        this.bookingList = bookingList;
     }
 }

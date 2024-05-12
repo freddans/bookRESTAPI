@@ -29,6 +29,9 @@ public class Flight {
     @Column(name = "booked")
     boolean isBooked;
 
+    @Column(name = "seats")
+    private int availableSeats = 42;
+
     public Flight() {
     }
 
@@ -109,5 +112,13 @@ public class Flight {
 
     public void setBooked(boolean booked) {
         isBooked = booked;
+    }
+
+    public int getAvailableSeats() {
+        return availableSeats;
+    }
+
+    public void setAvailableSeats(int availableSeats) {
+        this.availableSeats = availableSeats;
     }
 }
