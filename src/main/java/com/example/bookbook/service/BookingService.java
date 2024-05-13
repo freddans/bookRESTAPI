@@ -1,10 +1,11 @@
 package com.example.bookbook.service;
 
-import com.example.bookbook.entities.Flight;
 import com.example.bookbook.entities.Booking;
+import com.example.bookbook.entities.Flight;
 import com.example.bookbook.entities.Hotel;
-import com.example.bookbook.entities.Transportation;
+import com.example.bookbook.entities.TravelPackage;
 import com.example.bookbook.repositories.BookingRepository;
+import com.example.bookbook.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,56 +16,54 @@ import java.util.Optional;
 public class BookingService {
 
     private BookingRepository bookingRepository;
+    private AdminService adminService;
+    private TravelPackageService travelPackageService;
     private FlightService flightService;
     private HotelService hotelService;
-    private TransportationService transportationService;
 
     @Autowired
-    public BookingService(BookingRepository bookingRepository, FlightService flightService, HotelService hotelService, TransportationService transportationService) {
+    public BookingService(BookingRepository bookingRepository, AdminService adminService, TravelPackageService travelPackageService, FlightService flightService, HotelService hotelService) {
         this.bookingRepository = bookingRepository;
+        this.adminService = adminService;
+        this.travelPackageService = travelPackageService;
         this.flightService = flightService;
         this.hotelService = hotelService;
-        this.transportationService = transportationService;
     }
 
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
 
-    public Booking create(long flightId, long hotelId, long transportationId) {
-        Flight flight = flightService.findFlightById(flightId);
-        Hotel hotel = hotelService.findHotelById(hotelId);
-        Transportation transportation = transportationService.findTransportationById(transportationId);
+    public String create(long userId, long travelPackageId) {
+        User user = adminService.findUserById(userId);
+        TravelPackage travelPackage = travelPackageService.findTravelPackageById(travelPackageId);
 
-        if (flight != null && hotel != null && transportation != null) {
+        if (user != null) {
 
-            if (flight.getAvailableSeats() != 0) {
+            if (travelPackage != null) {
 
-                if (hotel.getAvailableRooms() != 0) {
+                Booking booking = new Booking(travelPackage, user);
 
-                    System.out.println("total price: " + (flight.getPrice() + hotel.getPrice() + transportation.getPrice()));
+                booking.getTravelPackage().getFlight().setAvailableSeats(booking.getTravelPackage().getFlight().getAvailableSeats() -1);
+                booking.getTravelPackage().getHotel().setAvailableRooms(booking.getTravelPackage().getHotel().getAvailableRooms() -1);
 
-                    Booking newBooking = new Booking(flight, hotel, transportation);
+                user.addBooking(booking);
 
-                    flight.setAvailableSeats(flight.getAvailableSeats() -1);
-                    hotel.setAvailableRooms(hotel.getAvailableRooms() -1);
+                bookingRepository.save(booking);
 
-                    bookingRepository.save(newBooking);
+                String country = booking.getTravelPackage().getHotel().getCountry();
+                String city = booking.getTravelPackage().getHotel().getCity();
 
-                    return newBooking;
-                }
+                return user.getName() + " booked a trip to " + city + ", " + country;
 
-                // No hotel rooms available
-                return null;
             } else {
 
-                // No seats available
-                return null;
+                return "provided Travelpackage ID not found";
             }
 
         } else {
 
-            return null;
+            return "provided User ID not found";
         }
     }
 
@@ -72,6 +71,7 @@ public class BookingService {
         Optional<Booking> optionalBooking = bookingRepository.findById(id);
 
         if (optionalBooking.isPresent()) {
+
             Booking booking = optionalBooking.get();
 
             return booking;
@@ -81,53 +81,68 @@ public class BookingService {
         }
     }
 
-    public Booking updateBooking(long id, long flightId, long hotelId, long transportationId) {
-        Booking existingBooking = findBookingById(id);
+    public String cancel(long userId, long bookingId) {
+        User user = adminService.findUserById(userId);
+        Booking booking = findBookingById(bookingId);
 
-        if (existingBooking != null) {
+        if (user != null) {
 
-            if (flightId != existingBooking.getFlight().getId() && flightId != 0) {
+            if (booking != null) {
 
-                Flight newFlight = flightService.findFlightById(flightId);
+                if (!booking.getCanceled()) {
 
-                existingBooking.setFlight(newFlight);
+                    user.removeBooking(booking);
+
+                    Flight flight = booking.getTravelPackage().getFlight();
+                    Hotel hotel = booking.getTravelPackage().getHotel();
+
+                    String country = hotel.getCountry();
+                    String city = hotel.getCity();
+
+                    flight.setAvailableSeats(flight.getAvailableSeats() +1);
+                    hotel.setAvailableRooms(hotel.getAvailableRooms() +1);
+
+                    booking.setCanceled(true);
+
+                    flightService.save(flight);
+                    hotelService.save(hotel);
+
+                    bookingRepository.save(booking);
+                    adminService.save(user);
+
+                    return user.getName() + " canceled their trip to " + city + ", " + country;
+                } else {
+
+                    return "Booking has been canceled";
+                }
+
+
+            } else {
+
+                return "provided Travelpackage ID not found";
             }
-            if (hotelId != existingBooking.getHotel().getId() && hotelId != 0) {
 
-                Hotel newHotel = hotelService.findHotelById(hotelId);
+        } else {
 
-                existingBooking.setHotel(newHotel);
-            }
-            if (transportationId != existingBooking.getTransportation().getId() && transportationId != 0) {
-
-                Transportation newTransportation = transportationService.findTransportationById(transportationId);
-
-                existingBooking.setTransportation(newTransportation);
-            }
-
-            bookingRepository.save(existingBooking);
+            return "provided User ID not found";
         }
-
-        return existingBooking;
     }
 
-    public String deleteBooking(long id) {
+    public String delete(long id) {
         Booking bookingToDelete = findBookingById(id);
 
         if (bookingToDelete != null) {
 
-            Flight flight = bookingToDelete.getFlight();
-            flight.setBooked(false);
+            User user = bookingToDelete.getUser();
 
-            Hotel hotel = bookingToDelete.getHotel();
-            hotel.setBooked(false);
-
-            Transportation transportation = bookingToDelete.getTransportation();
-            transportation.setBooked(false);
+            user.removeBooking(bookingToDelete);
 
             bookingRepository.delete(bookingToDelete);
-        }
 
-        return "Deleted booking";
+            return "Deleted booking";
+        } else {
+
+            return "provided booking ID does not exist";
+        }
     }
 }

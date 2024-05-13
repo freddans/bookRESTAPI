@@ -12,7 +12,7 @@ import java.util.Optional;
 public class FlightService {
 
     FlightRepository flightRepository;
-    BookingService bookingService;
+    TravelPackageService travelPackageService;
 
     @Autowired
     public FlightService(FlightRepository flightRepository) {
@@ -24,11 +24,20 @@ public class FlightService {
     }
 
     public Flight create(Flight flight) {
-        Flight newFlight = new Flight(flight.getName(), flight.getDestination(), flight.getDeparture(), flight.getArrival(), flight.getAirline(), flight.getPrice());
-        flightRepository.save(newFlight);
 
-        return newFlight;
+        if (flight.isPackaged() == null) {
 
+            Flight newFlight = new Flight(flight.getName(), flight.getDestination(), flight.getDeparture(), flight.getArrival(), flight.getAirline(), flight.getPrice());
+            flightRepository.save(newFlight);
+
+            return newFlight;
+        } else {
+
+            Flight newFlight = new Flight(flight.getName(), flight.getDestination(), flight.getDeparture(), flight.getArrival(), flight.getAirline(), flight.getPrice(), flight.isPackaged());
+            flightRepository.save(newFlight);
+
+            return newFlight;
+        }
     }
 
     public Flight findFlightById(long id) {
@@ -86,13 +95,13 @@ public class FlightService {
 
         if (flightToDelete != null) {
 
-            if (!flightToDelete.isBooked()) {
+            if (!flightToDelete.isPackaged()) {
 
 
                 flightRepository.delete(flightToDelete);
             } else {
 
-                return "Flight is currently part of a booking and can't be deleted";
+                return "Flight is currently part of a travelpackage and can't be deleted";
             }
         } else {
 
@@ -100,5 +109,9 @@ public class FlightService {
         }
 
         return "Flight deleted";
+    }
+
+    public void save(Flight flight) {
+        flightRepository.save(flight);
     }
 }

@@ -21,8 +21,8 @@ public class Hotel {
     private int stars;
     @Column(name="price")
     private double price;
-    @Column(name = "booked")
-    private boolean isBooked;
+    @Column(name = "packaged")
+    private Boolean isPackaged;
 
     @Column(name = "rooms")
     private int availableRooms = 20;
@@ -37,7 +37,17 @@ public class Hotel {
         this.wifi = wifi;
         this.stars = stars;
         this.price = price;
-        this.isBooked = true;
+        this.isPackaged = false;
+    }
+
+    public Hotel(String name, String country, String city, boolean wifi, int stars, double price, boolean isPackaged) {
+        this.name = name;
+        this.country = country;
+        this.city = city;
+        this.wifi = wifi;
+        this.stars = stars;
+        this.price = price;
+        this.isPackaged = isPackaged;
     }
 
     public long getId() {
@@ -96,12 +106,12 @@ public class Hotel {
         this.price = price;
     }
 
-    public boolean isBooked() {
-        return isBooked;
+    public Boolean isPackaged() {
+        return isPackaged;
     }
 
-    public void setBooked(boolean booked) {
-        isBooked = booked;
+    public void setPackaged(boolean packaged) {
+        isPackaged = packaged;
     }
 
     public int getAvailableRooms() {

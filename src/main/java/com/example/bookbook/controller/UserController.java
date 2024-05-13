@@ -1,6 +1,7 @@
 package com.example.bookbook.controller;
 
 import com.example.bookbook.entities.Booking;
+import com.example.bookbook.entities.TravelPackage;
 import com.example.bookbook.entities.Flight;
 import com.example.bookbook.entities.Hotel;
 import com.example.bookbook.service.UserService;
@@ -20,9 +21,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/availableorders")
-    public List<Booking> allAvailableOrders() {
-        return userService.getAllAvailableOrders();
+    @GetMapping("/availabletravelpackages")
+    public List<TravelPackage> allAvailableTravelPackages() {
+        return userService.getAllAvailableTravelPackages();
     }
 
     @GetMapping("/availableflights")

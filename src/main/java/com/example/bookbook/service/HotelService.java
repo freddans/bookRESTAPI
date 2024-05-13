@@ -24,10 +24,21 @@ public class HotelService {
     }
 
     public Hotel create(Hotel hotel) {
-        Hotel newHotel = new Hotel(hotel.getName(), hotel.getCountry(), hotel.getCity(), hotel.isWifi(), hotel.getStars(), hotel.getPrice());
-        hotelRepository.save(newHotel);
 
-        return newHotel;
+        if (hotel.isPackaged() == null) {
+
+            Hotel newHotel = new Hotel(hotel.getName(), hotel.getCountry(), hotel.getCity(), hotel.isWifi(), hotel.getStars(), hotel.getPrice());
+            hotelRepository.save(newHotel);
+
+            return newHotel;
+        } else {
+
+            Hotel newHotel = new Hotel(hotel.getName(), hotel.getCountry(), hotel.getCity(), hotel.isWifi(), hotel.getStars(), hotel.getPrice(), hotel.isPackaged());
+            hotelRepository.save(newHotel);
+
+            return newHotel;
+        }
+
     }
 
     public Hotel findHotelById(long id) {
@@ -87,13 +98,13 @@ public class HotelService {
 
         if (hotelToDelete != null) {
 
-            if (!hotelToDelete.isBooked()) {
+            if (!hotelToDelete.isPackaged()) {
 
 
                 hotelRepository.delete(hotelToDelete);
             } else {
 
-                return "Hotel is currently part of a booking and can't be deleted";
+                return "Hotel is currently part of a travelpackage and can't be deleted";
             }
         } else {
 
@@ -101,5 +112,9 @@ public class HotelService {
         }
 
         return "Hotel deleted";
+    }
+
+    public void save(Hotel hotel) {
+        hotelRepository.save(hotel);
     }
 }

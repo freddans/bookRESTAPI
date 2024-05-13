@@ -95,6 +95,10 @@ public class AdminService {
         }
     }
 
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
     public String deleteUser(long id) {
         User userToDelete = findUserById(id);
 

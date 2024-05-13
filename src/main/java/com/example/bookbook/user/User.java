@@ -1,8 +1,10 @@
 package com.example.bookbook.user;
 
 import com.example.bookbook.entities.Booking;
+import com.example.bookbook.entities.Event;
+import com.example.bookbook.entities.TravelPackage;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.hibernate.annotations.GeneratorType;
 
 import java.util.List;
 
@@ -27,8 +29,13 @@ public class User {
     @Column(name = "hasbookings")
     private boolean activeBookings;
 
+    @JsonIgnore
     @ManyToMany
     List<Booking> bookingList;
+
+    @JsonIgnore
+    @ManyToMany
+    List<Event> eventList;
 
 
     public User() {
@@ -111,11 +118,27 @@ public class User {
         this.bookingList = bookingList;
     }
 
+    public List<Event> getEventList() {
+        return eventList;
+    }
+
+    public void setEventList(List<Event> eventList) {
+        this.eventList = eventList;
+    }
+
     public void addBooking(Booking booking) {
         bookingList.add(booking);
     }
 
     public void removeBooking(Booking booking) {
         bookingList.remove(booking);
+    }
+
+    public void addEvent(Event event) {
+        eventList.add(event);
+    }
+
+    public void removeEvent(Event event) {
+        eventList.remove(event);
     }
 }

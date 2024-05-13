@@ -26,8 +26,8 @@ public class Flight {
     @Column(name = "price")
     private double price;
 
-    @Column(name = "booked")
-    boolean isBooked;
+    @Column(name = "packaged")
+    private Boolean isPackaged;
 
     @Column(name = "seats")
     private int availableSeats = 42;
@@ -47,7 +47,17 @@ public class Flight {
         this.arrival = arrival;
         this.airline = airline;
         this.price = price;
-        this.isBooked = true;
+        this.isPackaged = false;
+    }
+
+    public Flight(String name, String destination, String departure, String arrival, String airline, double price, boolean isPackaged) {
+        this.name = name;
+        this.destination = destination;
+        this.departure = departure;
+        this.arrival = arrival;
+        this.airline = airline;
+        this.price = price;
+        this.isPackaged = isPackaged;
     }
 
     public long getId() {
@@ -106,12 +116,12 @@ public class Flight {
         this.price = price;
     }
 
-    public boolean isBooked() {
-        return isBooked;
+    public Boolean isPackaged() {
+        return isPackaged;
     }
 
-    public void setBooked(boolean booked) {
-        isBooked = booked;
+    public void setPackaged(boolean packaged) {
+        isPackaged = packaged;
     }
 
     public int getAvailableSeats() {

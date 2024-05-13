@@ -1,6 +1,5 @@
 package com.example.bookbook.service;
 
-import com.example.bookbook.entities.Flight;
 import com.example.bookbook.entities.Transportation;
 import com.example.bookbook.repositories.TransportationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,21 @@ public class TransportationService {
     }
 
     public Transportation create(Transportation transportation) {
-        Transportation newTransportation = new Transportation(transportation.getType(), transportation.getPrice());
-        transportationRepository.save(newTransportation);
-        return newTransportation;
+
+        if (transportation.isPackaged() == null) {
+
+            Transportation newTransportation = new Transportation(transportation.getType(), transportation.getPrice());
+            transportationRepository.save(newTransportation);
+
+            return newTransportation;
+        } else {
+
+            Transportation newTransportation = new Transportation(transportation.getType(), transportation.getPrice(), transportation.isPackaged());
+            transportationRepository.save(newTransportation);
+
+            return newTransportation;
+        }
+
     }
 
     public Transportation findTransportationById(long id) {
@@ -67,13 +78,13 @@ public class TransportationService {
 
         if (transportationToDelete != null) {
 
-            if (!transportationToDelete.isBooked()) {
+            if (!transportationToDelete.isPackaged()) {
 
 
                 transportationRepository.delete(transportationToDelete);
             } else {
 
-                return "Transportation is currently part of a booking and can't be deleted";
+                return "Transportation is currently part of a travelpackage and can't be deleted";
             }
         } else {
 

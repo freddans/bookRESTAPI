@@ -1,6 +1,7 @@
 package com.example.bookbook.service;
 
 import com.example.bookbook.entities.Booking;
+import com.example.bookbook.entities.TravelPackage;
 import com.example.bookbook.entities.Flight;
 import com.example.bookbook.entities.Hotel;
 import com.example.bookbook.repositories.UserRepository;
@@ -16,31 +17,33 @@ public class UserService {
 
     private UserRepository userRepository;
     private AdminService adminService;
-    private BookingService bookingService;
+    private TravelPackageService travelPackageService;
     private FlightService flightService;
     private HotelService hotelService;
+    private BookingService bookingService;
 
     @Autowired
-    public UserService(UserRepository userRepository, BookingService bookingService, FlightService flightService, HotelService hotelService, AdminService adminService) {
+    public UserService(UserRepository userRepository, TravelPackageService travelPackageService, FlightService flightService, HotelService hotelService, AdminService adminService, BookingService bookingService) {
         this.userRepository = userRepository;
-        this.bookingService = bookingService;
+        this.travelPackageService = travelPackageService;
         this.flightService = flightService;
         this.hotelService = hotelService;
         this.adminService = adminService;
+        this.bookingService = bookingService;
     }
 
-    public List<Booking> getAllAvailableOrders() {
-        List<Booking> allAvailableBookings = new ArrayList<>();
+    public List<TravelPackage> getAllAvailableTravelPackages() {
+        List<TravelPackage> allAvailableTravelPackages = new ArrayList<>();
 
-        for (Booking booking : bookingService.getAllBookings()) {
-            if (booking.getFlight().getAvailableSeats() != 0 && booking.getHotel().getAvailableRooms() != 0) {
+        for (TravelPackage travelPackage : travelPackageService.getAllTravelPackages()) {
+            if (travelPackage.getFlight().getAvailableSeats() != 0 && travelPackage.getHotel().getAvailableRooms() != 0) {
 
-                allAvailableBookings.add(booking);
+                allAvailableTravelPackages.add(travelPackage);
             }
 
         }
 
-        return allAvailableBookings;
+        return allAvailableTravelPackages;
     }
 
     public List<Flight> getAllAvailableFlights() {
@@ -48,7 +51,7 @@ public class UserService {
 
         for (Flight flight : flightService.getAllFlights()) {
 
-            if (flight.getAvailableSeats() != 0) {
+            if (flight.getAvailableSeats() != 0 && flight.isPackaged()) {
 
                 allAvailableFlights.add(flight);
             }
@@ -62,7 +65,7 @@ public class UserService {
 
         for (Hotel hotel : hotelService.getAllHotels()) {
 
-            if (hotel.getAvailableRooms() != 0) {
+            if (hotel.getAvailableRooms() != 0 && hotel.isPackaged()) {
 
                 allAvailableHotels.add(hotel);
             }
@@ -71,66 +74,64 @@ public class UserService {
         return allAvailableHotels;
     }
 
-    public String create(long userId, long bookingId) {
+//    public String create(long userId, long bookingId) {
+//        User user = adminService.findUserById(userId);
+//        TravelPackage travelPackage = travelPackageService.findTravelPackageById(bookingId);
+//
+//        if (user != null) {
+//
+//            if (travelPackage != null) {
+//
+//                if (travelPackage.getFlight().getAvailableSeats() != 0 && travelPackage.getHotel().getAvailableRooms() != 0) {
+//
+//                    user.addBooking(travelPackage);
+//
+//                    travelPackage.getFlight().setAvailableSeats(travelPackage.getFlight().getAvailableSeats() -1);
+//                    travelPackage.getHotel().setAvailableRooms(travelPackage.getHotel().getAvailableRooms() -1);
+//
+//                    travelPackageService.updateTravelPackage(travelPackage.getId(), travelPackage.getFlight().getId(), travelPackage.getHotel().getId(), travelPackage.getTransportation().getId());
+//                    userRepository.save(user);
+//
+//                    return "User " + user.getName() + " successfully booked a trip to: " + travelPackage.getHotel().getCountry() + ", " + travelPackage.getHotel().getCity();
+//                } else {
+//
+//                    return "There are no available seats or rooms";
+//                }
+//            } else {
+//
+//                return "booking Id provided does not exist";
+//            }
+//
+//        } else {
+//
+//            return "user Id provided does not exist";
+//        }
+//    }
+
+    public String create(long userId, long travelPackageId) {
         User user = adminService.findUserById(userId);
-        Booking booking = bookingService.findBookingById(bookingId);
+        TravelPackage travelPackage = travelPackageService.findTravelPackageById(travelPackageId);
 
         if (user != null) {
 
-            if (booking != null) {
+            if (travelPackage != null) {
 
-                if (booking.getFlight().getAvailableSeats() != 0 && booking.getHotel().getAvailableRooms() != 0) {
+                return bookingService.create(userId, travelPackageId);
 
-                    user.addBooking(booking);
-
-                    booking.getFlight().setAvailableSeats(booking.getFlight().getAvailableSeats() -1);
-                    booking.getHotel().setAvailableRooms(booking.getHotel().getAvailableRooms() -1);
-
-                    bookingService.updateBooking(booking.getId(), booking.getFlight().getId(), booking.getHotel().getId(), booking.getTransportation().getId());
-                    userRepository.save(user);
-
-                    return "User " + user.getName() + " successfully booked a trip to: " + booking.getHotel().getCountry() + ", " + booking.getHotel().getCity();
-                } else {
-
-                    return "There are no available seats or rooms";
-                }
             } else {
 
-                return "booking Id provided does not exist";
+                return "provided Travelpackage ID not found";
             }
 
         } else {
 
-            return "user Id provided does not exist";
+            return "provided User ID not found";
         }
     }
 
     public String cancel(long userId, long bookingId) {
-        User user = adminService.findUserById(userId);
-        Booking booking = bookingService.findBookingById(bookingId);
 
-        if (user != null) {
-
-            if (booking != null) {
-
-                user.removeBooking(booking);
-
-                booking.getFlight().setAvailableSeats(booking.getFlight().getAvailableSeats() +1);
-                booking.getHotel().setAvailableRooms(booking.getHotel().getAvailableRooms() +1);
-
-                bookingService.updateBooking(booking.getId(), booking.getFlight().getId(), booking.getHotel().getId(), booking.getTransportation().getId());
-                userRepository.save(user);
-
-                return "User " + user.getName() + " successfully canceled their trip  to: " + booking.getHotel().getCountry() + ", " + booking.getHotel().getCity();
-            } else {
-
-                return "booking Id provided does not exist";
-            }
-
-        } else {
-
-            return "user Id provided does not exist";
-        }
+        return bookingService.cancel(userId, bookingId);
     }
 
     public List<Booking> getMyOrders(long id) {
