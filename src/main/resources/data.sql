@@ -42,8 +42,8 @@ VALUES ('Fredrik', '1989-02-10', 'Prästgårdsängen 8', '0708388404', 'flundell
 
 -- Bookings/Orders
 INSERT INTO bookings (travelpackage_id, user_id, date, canceled)
-VALUES (1, 1, NOW(), false),
-       (2, 2, NOW(), false);
+VALUES (4, 1, NOW(), false),
+       (3, 2, NOW(), false);
 
 -- Events
 INSERT INTO events (name, price, tickets)
@@ -51,9 +51,16 @@ VALUES ('Day Trip to Lindos', 30, 50), -- Rhodes
        ('Medieval City', 50, 50),
        ('Cake Lab', 20, 50), -- Bulgaria
        ('Action Aquapark', 40, 50),
-       ('Oceanário de Lisboa', 30, 50), -- Portugal
-       ('Ponte de Dom Luïs I', 20, 50),
-       ('Park Güell', 50, 50), -- Barcelona
-       ('La Sagrada Familia', 50, 50),
+       ('Oceanário de Lisboa', 30, 49), -- Portugal
+       ('Ponte de Dom Luïs I', 20, 49),
+       ('Park Güell', 50, 49), -- Barcelona
+       ('La Sagrada Familia', 50, 49),
        ('Lakawon Island Day Tour', 115, 50), -- Kape Verde
        ('Tri-City', 70, 50);
+
+-- Booked Events
+INSERT INTO eventbookings (event_id, user_id, date, canceled)
+VALUES (7, 1, NOW(), false),
+       (8, 1, NOW(), false),
+       (5, 2, NOW(), false),
+       (6, 2, NOW(), false);
