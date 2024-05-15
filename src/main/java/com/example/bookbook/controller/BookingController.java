@@ -25,11 +25,11 @@ public class BookingController {
 
     @PostMapping("/add")
     public String create(@RequestParam("userId") long userId, @RequestParam("travelPackageId") long travelPackageId) {
-        return bookingService.create(userId, travelPackageId);
+        return bookingService.createBookingAdmin(userId, travelPackageId);
     }
 
     @GetMapping("/{id}")
-    public Booking getEventById(@PathVariable long id) {
+    public Booking getBookingById(@PathVariable long id) {
         return bookingService.findBookingById(id);
     }
 

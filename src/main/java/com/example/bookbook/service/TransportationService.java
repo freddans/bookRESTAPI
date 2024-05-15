@@ -73,6 +73,10 @@ public class TransportationService {
         return existingTransportation;
     }
 
+    public void save(Transportation transportation) {
+        transportationRepository.save(transportation);
+    }
+
     public String deleteTransportation(long id) {
         Transportation transportationToDelete = findTransportationById(id);
 

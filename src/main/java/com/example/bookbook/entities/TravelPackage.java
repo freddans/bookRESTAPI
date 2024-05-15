@@ -11,17 +11,25 @@ public class TravelPackage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "flight_id")
     private Flight flight;
 
-    @ManyToOne
+    @ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
-    @ManyToOne
+    @ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "transportation_id")
     private Transportation transportation;
+
+    @ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "flight_home_id", nullable = false)
+    private Flight flightHome;
+
+    @ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "transportation_home_id", nullable = false)
+    private Transportation transportationHome;
 
     public TravelPackage() {
     }
@@ -30,6 +38,14 @@ public class TravelPackage {
         this.flight = flight;
         this.hotel = hotel;
         this.transportation = transportation;
+    }
+
+    public TravelPackage(Flight flight, Hotel hotel, Transportation transportation, Flight flightHome, Transportation transportationHome) {
+        this.flight = flight;
+        this.hotel = hotel;
+        this.transportation = transportation;
+        this.flightHome = flightHome;
+        this.transportationHome = transportationHome;
     }
 
     public long getId() {
@@ -62,5 +78,21 @@ public class TravelPackage {
 
     public void setTransportation(Transportation transportation) {
         this.transportation = transportation;
+    }
+
+    public Flight getFlightHome() {
+        return flightHome;
+    }
+
+    public void setFlightHome(Flight flightHome) {
+        this.flightHome = flightHome;
+    }
+
+    public Transportation getTransportationHome() {
+        return transportationHome;
+    }
+
+    public void setTransportationHome(Transportation transportationHome) {
+        this.transportationHome = transportationHome;
     }
 }

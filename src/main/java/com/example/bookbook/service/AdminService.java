@@ -109,11 +109,11 @@ public class AdminService {
                 userRepository.delete(userToDelete);
             } else {
 
-                return "User has active bookings and cant be deleted";
+                return "ERROR: User has active bookings and cant be deleted";
             }
         } else {
 
-            return "Could not find User with provided ID";
+            return "ERROR: Could not find User with provided ID";
         }
 
         return "User deleted";

@@ -24,10 +24,9 @@ public class TravelPackageController {
     }
 
     @PostMapping("/add")
-    public TravelPackage create(@RequestParam("flightId") long flightId,
-                                @RequestParam("hotelId") long hotelId,
-                                @RequestParam("transportationId") long transportationId) {
-        return travelPackageService.create(flightId, hotelId, transportationId);
+    public TravelPackage createWithHome(@RequestParam("flightId") long flightId, @RequestParam("hotelId") long hotelId, @RequestParam("transportationId") long transportationId,
+                                        @RequestParam("flightHomeId") long flightHomeId, @RequestParam("transportationHomeId") long transportationHomeId) {
+        return travelPackageService.createWithFlightHome(flightId, hotelId, transportationId, flightHomeId, transportationHomeId);
     }
 
     @GetMapping("/{id}")
@@ -36,8 +35,10 @@ public class TravelPackageController {
     }
 
     @PutMapping("/update/{id}")
-    public TravelPackage updateTravelPackage(@PathVariable long id, @RequestParam("flightId") long flightId, @RequestParam("hotelId") long hotelId, @RequestParam("transportationId") long transportationId) {
-        return travelPackageService.updateTravelPackage(id, flightId, hotelId, transportationId);
+    public TravelPackage updateTravelPackage(@PathVariable long id,
+                                             @RequestParam("flightId") long flightId, @RequestParam("hotelId") long hotelId, @RequestParam("transportationId") long transportationId,
+                                             @RequestParam("flightHomeId") long flightHomeId, @RequestParam("transportationHomeId") long transportationHomeId) {
+        return travelPackageService.updateTravelPackage(id, flightId, hotelId, transportationId, flightHomeId, transportationHomeId);
     }
 
     @DeleteMapping("/delete/{id}")

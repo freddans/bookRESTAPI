@@ -1,13 +1,13 @@
 package com.example.bookbook.service;
 
-import com.example.bookbook.entities.Flight;
-import com.example.bookbook.entities.TravelPackage;
-import com.example.bookbook.entities.Hotel;
-import com.example.bookbook.entities.Transportation;
+import com.example.bookbook.entities.*;
 import com.example.bookbook.repositories.TravelPackageRepository;
+import com.example.bookbook.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,13 +18,15 @@ public class TravelPackageService {
     private FlightService flightService;
     private HotelService hotelService;
     private TransportationService transportationService;
+    private BookingService bookingService;
 
     @Autowired
-    public TravelPackageService(TravelPackageRepository travelPackageRepository, FlightService flightService, HotelService hotelService, TransportationService transportationService) {
+    public TravelPackageService(TravelPackageRepository travelPackageRepository, FlightService flightService, HotelService hotelService, TransportationService transportationService, @Lazy BookingService bookingService) {
         this.travelPackageRepository = travelPackageRepository;
         this.flightService = flightService;
         this.hotelService = hotelService;
         this.transportationService = transportationService;
+        this.bookingService = bookingService;
     }
 
     public List<TravelPackage> getAllTravelPackages() {
@@ -106,6 +108,49 @@ public class TravelPackageService {
         }
     }
 
+    public TravelPackage createWithFlightHome(long flightId, long hotelId, long transportationId, long flightHomeId, long transportationHomeId) {
+        Flight flight = flightService.findFlightById(flightId);
+        Hotel hotel = hotelService.findHotelById(hotelId);
+        Transportation transportation = transportationService.findTransportationById(transportationId);
+
+        Flight flightHome = flightService.findFlightById(flightHomeId);
+        Transportation transportationHome = transportationService.findTransportationById(transportationHomeId);
+
+        if (flight != null && hotel != null && transportation != null) {
+
+            if (flight.getAvailableSeats() != 0) {
+
+                if (hotel.getAvailableRooms() != 0) {
+
+                    System.out.println("total price: " + (flight.getPrice() + hotel.getPrice() + transportation.getPrice() + flightHome.getPrice() + transportationHome.getPrice()));
+
+                    TravelPackage newTravelPackage = new TravelPackage(flight, hotel, transportation, flightHome, transportationHome);
+
+                    flight.setPackaged(true);
+                    hotel.setPackaged(true);
+                    transportation.setPackaged(true);
+                    flightHome.setPackaged(true);
+                    transportationHome.setPackaged(true);
+
+                    travelPackageRepository.save(newTravelPackage);
+
+                    return newTravelPackage;
+                }
+
+                // No hotel rooms available - package cant be found
+                return null;
+            } else {
+
+                // No seats available on plain - package cant be found
+                return null;
+            }
+
+        } else {
+
+            return null;
+        }
+    }
+
     public TravelPackage findTravelPackageById(long id) {
         Optional<TravelPackage> optionalBooking = travelPackageRepository.findById(id);
 
@@ -119,7 +164,7 @@ public class TravelPackageService {
         }
     }
 
-    public TravelPackage updateTravelPackage(long id, long flightId, long hotelId, long transportationId) {
+    public TravelPackage updateTravelPackage(long id, long flightId, long hotelId, long transportationId, long flightHomeId, long transportationHomeId) {
         TravelPackage existingTravelPackage = findTravelPackageById(id);
 
         if (existingTravelPackage != null) {
@@ -142,6 +187,18 @@ public class TravelPackageService {
 
                 existingTravelPackage.setTransportation(newTransportation);
             }
+            if (flightHomeId != existingTravelPackage.getFlightHome().getId() && flightHomeId != 0) {
+
+                Flight flightHome = flightService.findFlightById(flightHomeId);
+
+                existingTravelPackage.setFlightHome(flightHome);
+            }
+            if (transportationHomeId != existingTravelPackage.getTransportationHome().getId() && transportationHomeId != 0) {
+
+                Transportation transportationHome = transportationService.findTransportationById(transportationHomeId);
+
+                existingTravelPackage.setTransportationHome(transportationHome);
+            }
 
             travelPackageRepository.save(existingTravelPackage);
         }
@@ -154,18 +211,48 @@ public class TravelPackageService {
 
         if (travelPackageToDelete != null) {
 
-            Flight flight = travelPackageToDelete.getFlight();
-            flight.setPackaged(false);
+            List<User> bookedByUsers = new ArrayList<>();
 
-            Hotel hotel = travelPackageToDelete.getHotel();
-            hotel.setPackaged(false);
+            for (Booking booking : bookingService.getAllBookings()) {
+                if (booking.getTravelPackage().getId() == travelPackageToDelete.getId()) {
 
-            Transportation transportation = travelPackageToDelete.getTransportation();
-            transportation.setPackaged(false);
+                    bookedByUsers.add(booking.getUser());
+                }
+            }
 
-            travelPackageRepository.delete(travelPackageToDelete);
+            if (bookedByUsers.isEmpty()) {
 
-            return "Deleted travelpackage";
+                Flight flight = travelPackageToDelete.getFlight();
+                flight.setPackaged(false);
+                flightService.save(flight);
+
+                Hotel hotel = travelPackageToDelete.getHotel();
+                hotel.setPackaged(false);
+                hotelService.save(hotel);
+
+                Transportation transportation = travelPackageToDelete.getTransportation();
+                transportation.setPackaged(false);
+                transportationService.save(transportation);
+
+                Flight flightHome = travelPackageToDelete.getFlightHome();
+                flightHome.setPackaged(false);
+                flightService.save(flightHome);
+
+                Transportation transportationHome = travelPackageToDelete.getTransportationHome();
+                transportationHome.setPackaged(false);
+                transportationService.save(transportationHome);
+
+                travelPackageRepository.save(travelPackageToDelete);
+
+                travelPackageRepository.delete(travelPackageToDelete);
+
+                return "Deleted travelpackage";
+            } else {
+
+                return "There are active bookings by Users";
+            }
+
+
         } else {
 
             return "Provided travelpackage ID not found";

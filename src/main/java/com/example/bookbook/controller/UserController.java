@@ -37,8 +37,8 @@ public class UserController {
     }
 
     @PostMapping("/addtouserid/{id}")
-    public String create(@PathVariable long id, @RequestParam("bookingId") long bookingId) {
-        return userService.create(id, bookingId);
+    public String createBooking(@PathVariable long id, @RequestParam("travelPackageId") long travelPackageId) {
+        return userService.createBooking(id, travelPackageId);
     }
 
     @PutMapping("/cancelorderforuserid/{id}")

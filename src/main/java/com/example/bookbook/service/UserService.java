@@ -8,6 +8,7 @@ import com.example.bookbook.repositories.UserRepository;
 import com.example.bookbook.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,25 +109,23 @@ public class UserService {
 //        }
 //    }
 
-    public String create(long userId, long travelPackageId) {
+
+    public String createBooking(long userId, long travelPackageId) {
         User user = adminService.findUserById(userId);
         TravelPackage travelPackage = travelPackageService.findTravelPackageById(travelPackageId);
 
-        if (user != null) {
-
-            if (travelPackage != null) {
-
-                return bookingService.create(userId, travelPackageId);
-
-            } else {
-
-                return "provided Travelpackage ID not found";
-            }
-
-        } else {
+        if (user == null) {
 
             return "provided User ID not found";
         }
+
+        if (travelPackage == null) {
+
+            return "provided Travelpackage ID not found";
+        }
+
+//        return bookingService.create(user.getId(), travelPackage.getId());
+        return bookingService.createBooking(user, travelPackage);
     }
 
     public String cancel(long userId, long bookingId) {

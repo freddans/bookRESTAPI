@@ -1,10 +1,15 @@
 -- Airlines
 INSERT INTO flights (name, destination, departure, arrival, airline, price, packaged, seats)
 VALUES ('A3 4321', 'GOT-RHO', '21:00', '01:30', 'Aegean', 3740, true, 41), -- Rhodes
+       ('A3 4321', 'RHO-GOT', '02:00', '06:30', 'Aegean', 3740, true, 41), -- Rhodes Home
        ('W6 1736', 'GOT-BOJ', '13:05', '17:40', 'Wizz Air', 453, true, 41), -- Bulgaria
+       ('W6 1736', 'BOJ-GOT', '15:05', '19:40', 'Wizz Air', 453, true, 41), -- Bulgaria Home
        ('D8 4900', 'GOT-OPO', '07:35', '15:15', 'Norwegian International', 636, true, 41), -- Portugal
+       ('D8 4900', 'OPO-GOT', '10:35', '18:15', 'Norwegian International', 636, true, 41), -- Portugal Home
        ('D8 5505', 'GOT-BCN', '19:55', '22:55', 'Norwegian International', 340, true, 41), -- Barcelona
-       ('SK 431', 'GOT-BVC', '16:00', '18:15', 'SAS', 1962, true, 41); -- Kap Verde
+       ('D8 5505', 'BCN-GOT', '13:55', '16:55', 'Norwegian International', 340, true, 41), -- Barcelona Home
+       ('SK 431', 'GOT-BVC', '16:00', '18:15', 'SAS', 1962, true, 41), -- Kap Verde
+       ('SK 431', 'BVC-GOT', '12:00', '14:15', 'SAS', 1962, true, 41); -- Kap Verde Home
 
 -- Hotels
 INSERT INTO hotels (name, country, city, wifi, stars, price, packaged, rooms)
@@ -35,20 +40,20 @@ VALUES ('Day Trip to Lindos', 30), -- Rhodes
        ('Lakawon Island Day Tour', 115), -- Kape Verde
        ('Tri-City', 70);
 
--- Orders
-INSERT INTO packages (flight_id, hotel_id, transportation_id)
-VALUES (1, 1, 1),
-       (2, 2, 2),
-       (3, 3, 3),
-       (4, 4, 4),
-       (5, 5, 5);
+-- TravelPackages
+INSERT INTO packages (flight_id, hotel_id, transportation_id, flight_home_id, transportation_home_id)
+VALUES (1, 1, 1, 2, 1),
+       (3, 2, 2, 4, 2),
+       (5, 3, 3, 6, 3),
+       (7, 4, 4, 8, 4),
+       (9, 5, 5, 10, 5);
 
 -- Users
 INSERT INTO users (name, birthday, address, phone, email, hasbookings)
 VALUES ('Fredrik', '1989-02-10', 'Prästgårdsängen 8', '0708388404', 'flundell89@gmail.com', false),
        ('Jonas', '1985-12-24', 'Runslingan 29', '0701111111', 'bloosucker85@gmail.com', false);
 
--- Bookings
+-- Bookings/Orders
 INSERT INTO bookings (travelpackage_id, user_id, date, canceled)
 VALUES (1, 1, NOW(), false),
        (2, 2, NOW(), false);

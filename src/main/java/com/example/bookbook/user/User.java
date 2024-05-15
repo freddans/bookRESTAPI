@@ -30,7 +30,7 @@ public class User {
     private boolean activeBookings;
 
     @JsonIgnore
-    @ManyToMany
+    @OneToMany
     List<Booking> bookingList;
 
     @JsonIgnore
@@ -128,10 +128,16 @@ public class User {
 
     public void addBooking(Booking booking) {
         bookingList.add(booking);
+        if (!activeBookings) {
+            setActiveBookings(true);
+        }
     }
 
     public void removeBooking(Booking booking) {
         bookingList.remove(booking);
+        if (bookingList.isEmpty()) {
+            setActiveBookings(false);
+        }
     }
 
     public void addEvent(Event event) {
