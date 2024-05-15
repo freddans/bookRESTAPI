@@ -2,6 +2,7 @@ package com.example.bookbook.user;
 
 import com.example.bookbook.entities.Booking;
 import com.example.bookbook.entities.Event;
+import com.example.bookbook.entities.EventBooking;
 import com.example.bookbook.entities.TravelPackage;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -34,8 +35,8 @@ public class User {
     List<Booking> bookingList;
 
     @JsonIgnore
-    @ManyToMany
-    List<Event> eventList;
+    @OneToMany
+    List<EventBooking> eventList;
 
 
     public User() {
@@ -118,11 +119,11 @@ public class User {
         this.bookingList = bookingList;
     }
 
-    public List<Event> getEventList() {
+    public List<EventBooking> getEventList() {
         return eventList;
     }
 
-    public void setEventList(List<Event> eventList) {
+    public void setEventList(List<EventBooking> eventList) {
         this.eventList = eventList;
     }
 
@@ -140,11 +141,11 @@ public class User {
         }
     }
 
-    public void addEvent(Event event) {
+    public void addEvent(EventBooking event) {
         eventList.add(event);
     }
 
-    public void removeEvent(Event event) {
+    public void removeEvent(EventBooking event) {
         eventList.remove(event);
     }
 }

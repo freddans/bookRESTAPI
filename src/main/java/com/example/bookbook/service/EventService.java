@@ -1,10 +1,12 @@
 package com.example.bookbook.service;
 
-import com.example.bookbook.entities.Event;
+import com.example.bookbook.entities.*;
 import com.example.bookbook.repositories.EventRepository;
+import com.example.bookbook.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +26,7 @@ public class EventService {
 
     public Event create(Event event) {
 
-        Event newEvent = new Event(event.getName(), event.getPrice());
+        Event newEvent = new Event(event.getName(), event.getPrice(), 50);
 
         eventRepository.save(newEvent);
 
@@ -81,4 +83,6 @@ public class EventService {
             return "provided event ID does not exist";
         }
     }
+
+
 }

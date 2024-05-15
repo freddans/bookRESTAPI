@@ -27,19 +27,6 @@ VALUES ('VIP Taxi', 1100, true),
        ('Limousine', 2500, true),
        ('Bus', 65, true);
 
--- Events
-INSERT INTO events (name, price)
-VALUES ('Day Trip to Lindos', 30), -- Rhodes
-       ('Medieval City', 50),
-       ('Cake Lab', 20), -- Bulgaria
-       ('Action Aquapark', 40),
-       ('Oceanário de Lisboa', 30), -- Portugal
-       ('Ponte de Dom Luïs I', 20),
-       ('Park Güell', 50), -- Barcelona
-       ('La Sagrada Familia', 50),
-       ('Lakawon Island Day Tour', 115), -- Kape Verde
-       ('Tri-City', 70);
-
 -- TravelPackages
 INSERT INTO packages (flight_id, hotel_id, transportation_id, flight_home_id, transportation_home_id)
 VALUES (1, 1, 1, 2, 1),
@@ -57,3 +44,16 @@ VALUES ('Fredrik', '1989-02-10', 'Prästgårdsängen 8', '0708388404', 'flundell
 INSERT INTO bookings (travelpackage_id, user_id, date, canceled)
 VALUES (1, 1, NOW(), false),
        (2, 2, NOW(), false);
+
+-- Events
+INSERT INTO events (name, price, tickets)
+VALUES ('Day Trip to Lindos', 30, 50), -- Rhodes
+       ('Medieval City', 50, 50),
+       ('Cake Lab', 20, 50), -- Bulgaria
+       ('Action Aquapark', 40, 50),
+       ('Oceanário de Lisboa', 30, 50), -- Portugal
+       ('Ponte de Dom Luïs I', 20, 50),
+       ('Park Güell', 50, 50), -- Barcelona
+       ('La Sagrada Familia', 50, 50),
+       ('Lakawon Island Day Tour', 115, 50), -- Kape Verde
+       ('Tri-City', 70, 50);

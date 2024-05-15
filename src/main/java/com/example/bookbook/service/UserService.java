@@ -1,9 +1,6 @@
 package com.example.bookbook.service;
 
-import com.example.bookbook.entities.Booking;
-import com.example.bookbook.entities.TravelPackage;
-import com.example.bookbook.entities.Flight;
-import com.example.bookbook.entities.Hotel;
+import com.example.bookbook.entities.*;
 import com.example.bookbook.repositories.UserRepository;
 import com.example.bookbook.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +19,19 @@ public class UserService {
     private FlightService flightService;
     private HotelService hotelService;
     private BookingService bookingService;
+    private EventService eventService;
+    private EventBookingService eventBookingService;
 
     @Autowired
-    public UserService(UserRepository userRepository, TravelPackageService travelPackageService, FlightService flightService, HotelService hotelService, AdminService adminService, BookingService bookingService) {
+    public UserService(UserRepository userRepository, TravelPackageService travelPackageService, FlightService flightService, HotelService hotelService, AdminService adminService, BookingService bookingService, EventService eventService, EventBookingService eventBookingService) {
         this.userRepository = userRepository;
         this.travelPackageService = travelPackageService;
         this.flightService = flightService;
         this.hotelService = hotelService;
         this.adminService = adminService;
         this.bookingService = bookingService;
+        this.eventService = eventService;
+        this.eventBookingService = eventBookingService;
     }
 
     public List<TravelPackage> getAllAvailableTravelPackages() {
@@ -116,21 +117,42 @@ public class UserService {
 
         if (user == null) {
 
-            return "provided User ID not found";
+            return "ERROR: Provided User ID not found";
         }
 
         if (travelPackage == null) {
 
-            return "provided Travelpackage ID not found";
+            return "ERROR: Provided Travelpackage ID not found";
         }
 
-//        return bookingService.create(user.getId(), travelPackage.getId());
         return bookingService.createBooking(user, travelPackage);
+    }
+
+    public String createEventBooking(long userId, long eventId) {
+        User user = adminService.findUserById(userId);
+        Event event = eventService.findEventById(eventId);
+
+        if (user == null) {
+
+            return "ERROR: Provided User ID not found";
+        }
+
+        if (event == null) {
+
+            return "ERROR: Provided Event ID not found";
+        }
+
+        return eventBookingService.createEventBooking(user, event);
     }
 
     public String cancel(long userId, long bookingId) {
 
         return bookingService.cancel(userId, bookingId);
+    }
+
+    public String cancelEventBooking(long userId, long eventBookingId) {
+
+        return eventBookingService.cancel(userId, eventBookingId);
     }
 
     public List<Booking> getMyOrders(long id) {
@@ -139,6 +161,18 @@ public class UserService {
         if (user != null) {
 
             return user.getBookingList();
+        } else {
+
+            return null;
+        }
+    }
+
+    public List<EventBooking> getMyEventOrders(long id) {
+        User user = adminService.findUserById(id);
+
+        if (user != null) {
+
+            return user.getEventList();
         } else {
 
             return null;

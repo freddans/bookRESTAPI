@@ -4,19 +4,18 @@ import com.example.bookbook.user.User;
 import jakarta.persistence.*;
 
 import java.util.Date;
-import java.util.List;
 
 @Entity
-@Table(name = "bookings")
-public class Booking {
+@Table(name = "eventbookings")
+public class EventBooking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    private long id;
 
     @ManyToOne
-    @JoinColumn(name = "travelpackage_id")
-    private TravelPackage travelPackage;
+    @JoinColumn(name = "event_id")
+    private Event event;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -28,23 +27,22 @@ public class Booking {
     @Column(name = "canceled")
     private Boolean isCanceled;
 
-    public Booking() {
+    public EventBooking() {
     }
 
-    public Booking(TravelPackage travelPackage, User user) {
-        this.travelPackage = travelPackage;
+    public EventBooking(Event event, User user) {
+        this.event = event;
         this.user = user;
         this.bookingDate = new Date();
         this.isCanceled = false;
     }
 
-    public Booking(TravelPackage travelPackage, User user, Date bookingDate) {
-        this.travelPackage = travelPackage;
+    public EventBooking(Event event, User user, Date bookingDate) {
+        this.event = event;
         this.user = user;
         this.bookingDate = bookingDate;
         this.isCanceled = false;
     }
-
 
     public long getId() {
         return id;
@@ -54,12 +52,12 @@ public class Booking {
         this.id = id;
     }
 
-    public TravelPackage getTravelPackage() {
-        return travelPackage;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setTravelPackage(TravelPackage travelPackage) {
-        this.travelPackage = travelPackage;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     public User getUser() {

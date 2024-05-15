@@ -15,12 +15,16 @@ public class Event {
     @Column(name = "price")
     private double price;
 
+    @Column(name = "tickets")
+    private int tickets;
+
     public Event() {
     }
 
-    public Event(String name, double price) {
+    public Event(String name, double price, int tickets) {
         this.name = name;
         this.price = price;
+        this.tickets = tickets;
     }
 
     public long getId() {
@@ -45,5 +49,13 @@ public class Event {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public int getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(int tickets) {
+        this.tickets = tickets;
     }
 }

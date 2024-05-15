@@ -1,9 +1,6 @@
 package com.example.bookbook.controller;
 
-import com.example.bookbook.entities.Booking;
-import com.example.bookbook.entities.TravelPackage;
-import com.example.bookbook.entities.Flight;
-import com.example.bookbook.entities.Hotel;
+import com.example.bookbook.entities.*;
 import com.example.bookbook.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,13 +38,28 @@ public class UserController {
         return userService.createBooking(id, travelPackageId);
     }
 
+    @PostMapping("/addeventtouserid/{id}")
+    public String createEventBooking(@PathVariable long id, @RequestParam("eventId") long eventId) {
+        return userService.createEventBooking(id, eventId);
+    }
+
     @PutMapping("/cancelorderforuserid/{id}")
     public String cancel(@PathVariable long id, @RequestParam("bookingId") long bookingId) {
         return userService.cancel(id, bookingId);
     }
 
+    @PutMapping("/canceleventorderforuserid/{id}")
+    public String cancelEventOrder(@PathVariable long id, @RequestParam("eventBookingId") long eventBookingId) {
+        return userService.cancelEventBooking(id, eventBookingId);
+    }
+
     @GetMapping("/myorders/{id}")
     public List<Booking> myOrders(@PathVariable long id) {
         return userService.getMyOrders(id);
+    }
+
+    @GetMapping("/myeventorders/{id}")
+    public List<EventBooking> myEventOrders(@PathVariable long id) {
+        return userService.getMyEventOrders(id);
     }
 }
