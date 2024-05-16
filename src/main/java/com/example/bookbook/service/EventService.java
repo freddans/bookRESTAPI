@@ -75,9 +75,16 @@ public class EventService {
 
         if (eventToDelete != null) {
 
-            eventRepository.delete(eventToDelete);
+            if (eventToDelete.getTickets() < 50) {
 
-            return "Event deleted";
+                return "ERROR: Can't delete events that have active bookings";
+
+            } else {
+
+                eventRepository.delete(eventToDelete);
+
+                return "Event deleted";
+            }
         } else {
 
             return "provided event ID does not exist";
